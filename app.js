@@ -3,6 +3,10 @@ var routes = require('./routes/index.js');
 var tweetBank = require('./tweetBank.js');
 var swig = require('swig');
 var bodyParser = require('body-parser');
+var socketio = require('socket.io');
+
+// var server = app.listen(3000);
+// var io = socketio.listen(server);
 
 var app =  express();
 var port = 3000;
@@ -21,8 +25,7 @@ swig.setDefaults({ cache: false });
 routes.get('/users/:name', function(req, res) {
   var name = req.params.name;
   var list = tweetBank.find( {name: name} );
-  console.log(list);
-  res.render( 'index', { tweets: list, showForm: false } );
+  res.render( 'index', { tweets: list, showForm: true, searchedName:true} );
 });
 
 app.post('/tweets', function (req, res) {
