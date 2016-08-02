@@ -1,9 +1,12 @@
 var express = require('express');
+var routes = require('./routes/index.js');
 var swig = require('swig');
+
 var app =  express();
 var port = 3000;
 
-
+app.use(express.static('public'));
+app.use('/', routes);
 app.set('views', __dirname + '/views'); // point res.render to the proper directory
 app.set('view engine', 'html'); // have res.render work with html files
 app.engine('html', swig.renderFile); 
