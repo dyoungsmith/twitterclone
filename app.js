@@ -1,35 +1,36 @@
 var express = require('express');
 var routes = require('./routes/index.js');
+var tweetBank = require('./tweetBank.js');
 var swig = require('swig');
+var bodyParser = require('body-parser');
 
 var app =  express();
 var port = 3000;
 
 app.use(express.static('public'));
 app.use('/', routes);
+app.use(bodyParser.urlencoded({ extended: true }));
+app.use(bodyParser.json());
+
 app.set('views', __dirname + '/views'); // point res.render to the proper directory
 app.set('view engine', 'html'); // have res.render work with html files
 app.engine('html', swig.renderFile); 
 swig.setDefaults({ cache: false });
 
 
-app.get('/', function(req, res, next) {
-	res.send('under construction.');
-	next();
+routes.get('/users/:name', function(req, res) {
+  var name = req.params.name;
+  var list = tweetBank.find( {name: name} );
+  console.log(list);
+  res.render( 'index', { tweets: list, showForm: false } );
 });
 
-app.get('/tweets/', function(req, res, next) {
-	res.send('send us your tweets');
-	next();
+app.post('/tweets', function (req, res) {
+	var name = req.body.name;
+	var text = req.body.text;
+	tweetBank.add(name, text);
+	res.redirect( '/' );
 });
-
-app.post('/tweets/', function (req, res, next) {
-	// res.send('this is the start of the chain');
-	var people = [{name: 'Full'}, {name: 'Stacker'}, {name: 'Son'}];
-	res.render( 'index', {title: 'Hall of Fame', people: people} );
-	next();
-});
-
 
 app.listen(port, function() {
 	console.log('server listening........');

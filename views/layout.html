@@ -68,7 +68,7 @@
 
     <div id="footer">
       <div class="container">
-        <p class="text-muted">Twitter.js, Fullstack Academy</p>
+        <p class="text-muted">Twitter.js, Grace Hopper Academy</p>
       </div>
     </div>
 
@@ -79,4 +79,22 @@
     <script src="https://code.jquery.com/jquery-1.10.2.min.js"></script>
     <script src="http://netdna.bootstrapcdn.com/bootstrap/3.0.3/js/bootstrap.min.js"></script>
   </body>
+
+  <script src="/socket.io/socket.io.js"></script>
+  <script>
+    // Load the socket.io library above, then connect to the server.
+    // Because the socket.io server is being run on the same server as your 
+    // Express instance, you can connect() without any arguments.
+    var socket = io.connect();
+    socket.on('connect', function(){
+      console.log('connected to server via WebSockets!');
+    });
+    // When 'new_tweet' events are fired, do something with the packaged tweet
+    socket.on('newTweet', function (tweet) { 
+      console.log(tweet);
+      alert('Refreshing... check the console...');
+      // some logic to add the new tweet to the DOM…
+    }); 
+  </script>
+  
 </html>
