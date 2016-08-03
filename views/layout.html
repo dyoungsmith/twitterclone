@@ -92,6 +92,7 @@
     // When 'new_tweet' events are fired, do something with the packaged tweet
     socket.on('newTweet', function (tweet) { 
       console.log(tweet);
+      tweetList.prepend(tweet);
       alert('Refreshing... check the console...');
       // some logic to add the new tweet to the DOM…
     }); 

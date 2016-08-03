@@ -5,14 +5,14 @@ var swig = require('swig');
 var bodyParser = require('body-parser');
 var socketio = require('socket.io');
 
-// var server = app.listen(3000);
-// var io = socketio.listen(server);
-
 var app =  express();
-var port = 3000;
+
+var server = app.listen(3000);
+var io = socketio.listen(server);
+
 
 app.use(express.static('public'));
-app.use('/', routes);
+app.use('/', routes(io));
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(bodyParser.json());
 
@@ -22,20 +22,22 @@ app.engine('html', swig.renderFile);
 swig.setDefaults({ cache: false });
 
 
-routes.get('/users/:name', function(req, res) {
+app.get('/users/:name', function(req, res) {
   var name = req.params.name;
   var list = tweetBank.find( {name: name} );
-  res.render( 'index', { tweets: list, showForm: true, searchedName:true} );
+  res.render( 'index', { tweets: list, showForm: false, searchedName: name} );
 });
+
 
 app.post('/tweets', function (req, res) {
 	var name = req.body.name;
 	var text = req.body.text;
-	tweetBank.add(name, text);
+	var tweet = tweetBank.add(name, text);
+	io.sockets.emit('newTweet', {tweet});
 	res.redirect( '/' );
 });
 
-app.listen(port, function() {
-	console.log('server listening........');
-});
+// app.listen(port, function() {
+// 	console.log('server listening........');
+// });
 
